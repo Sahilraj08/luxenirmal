@@ -11,6 +11,9 @@ const supabase = SUPABASE_URL && SUPABASE_KEY
   ? createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 
+// DEBUG LINE: Isse logs mein pata chalega ki Supabase connect hua ya nahi
+console.log("DEBUG: Supabase initialized:", !!supabase);
+
 const app = express();
 
 app.use(express.json());
@@ -19,10 +22,14 @@ app.use(cookieParser());
 // API Route: Products
 app.get("/api/products", async (req, res) => {
   if (supabase) {
-    const { data } = await supabase.from('products').select('*');
+    const { data, error } = await supabase.from('products').select('*');
+    if (error) {
+      console.log("DEBUG: Supabase fetch error:", error);
+      return res.json([]);
+    }
     return res.json(data || []);
   }
-  res.json([]);
+  return res.json([]);
 });
 
 // Admin Auth
@@ -31,8 +38,6 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "993443";
 app.post("/api/login", (req, res) => {
   const { password } = req.body;
   
-  console.log("DEBUG: Login attempt received.");
-
   if (password && password.toString().trim() === ADMIN_PASSWORD.trim()) {
     res.cookie("admin_token", "authenticated", { 
       httpOnly: true, 
@@ -54,7 +59,7 @@ app.get("/api/admin/check", (req, res) => {
   res.status(401).json({ success: false });
 });
 
-// Catch all for SPA (This handles React routing)
+// Catch all for SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
