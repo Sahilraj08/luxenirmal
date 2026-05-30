@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-lux-cream: #FAF9F6;
+  --color-lux-white: #FFFFFF;
+  --color-lux-beige: #E5E0D8;
+  --color-lux-charcoal: #1A1A1A;
+  --color-lux-gold: #C5A059;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+}
+
+body {
+  @apply bg-lux-cream text-lux-charcoal;
+}
